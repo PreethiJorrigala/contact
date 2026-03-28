@@ -12,7 +12,7 @@ function ContactList({ userId }) {
 
     useEffect(() => {
         loadContacts();
-    }, [userId]);
+    }, [userId, loadContacts]);
 
     const loadContacts = async () => {
         const res = await API.get(`/contacts/${userId}`);

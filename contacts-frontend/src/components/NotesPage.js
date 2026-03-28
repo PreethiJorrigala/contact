@@ -6,7 +6,7 @@ function NotesPage({ userId }) {
 
     useEffect(() => {
         loadNotes();
-    }, []);
+    }, [loadNotes]);
 
     const loadNotes = async () => {
         try {
