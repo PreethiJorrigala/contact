@@ -9,7 +9,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/notes")
-@CrossOrigin(origins = "http://localhost:3000")
+// @CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class NoteController {
 
     private final NoteRepository noteRepo;
