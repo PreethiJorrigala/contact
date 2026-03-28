@@ -1,21 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import API from "../services/api";
 
 function NotesPage({ userId }) {
     const [notes, setNotes] = useState([]);
 
-    useEffect(() => {
-        loadNotes();
-    }, [loadNotes]);
-
-    const loadNotes = async () => {
+    // ✅ FIX: wrap function
+    const loadNotes = useCallback(async () => {
         try {
             const res = await API.get(`/notes/user/${userId}`);
             setNotes(res.data);
         } catch (err) {
             console.log(err);
         }
-    };
+    }, [userId]);
+
+    // ✅ FIX: use only loadNotes
+    useEffect(() => {
+        loadNotes();
+    }, [loadNotes]);
 
     return (
         <div>
@@ -43,7 +45,6 @@ const styles = {
         marginBottom: "15px",
         color: "#374151"
     },
-
     card: {
         background: "#f9fafb",
         padding: "12px",
@@ -51,16 +52,13 @@ const styles = {
         marginBottom: "10px",
         border: "1px solid #e5e7eb"
     },
-
     name: {
         marginBottom: "5px",
         color: "#111827"
     },
-
     noteText: {
         color: "#4b5563"
     },
-
     empty: {
         color: "#6b7280"
     }

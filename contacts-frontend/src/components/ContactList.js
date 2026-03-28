@@ -1,23 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import API from "../services/api";
 
 function ContactList({ userId }) {
     const [contacts, setContacts] = useState([]);
-    const [expandedId, setExpandedId] = useState(null); // ✅ toggle
+    const [expandedId, setExpandedId] = useState(null);
     const [search, setSearch] = useState("");
     const [notes, setNotes] = useState([]);
     const [newNote, setNewNote] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const [editForm, setEditForm] = useState({});
 
-    useEffect(() => {
-        loadContacts();
-    }, [userId, loadContacts]);
-
-    const loadContacts = async () => {
+    // ✅ FIX: wrap in useCallback
+    const loadContacts = useCallback(async () => {
         const res = await API.get(`/contacts/${userId}`);
         setContacts(res.data);
-    };
+    }, [userId]);
+
+    // ✅ FIX: use only loadContacts
+    useEffect(() => {
+        loadContacts();
+    }, [loadContacts]);
 
     const toggleExpand = async (contact) => {
         if (expandedId === contact.id) {
@@ -69,7 +71,6 @@ function ContactList({ userId }) {
     return (
         <div>
 
-            {/* 🔍 SEARCH */}
             <input
                 placeholder="Search..."
                 value={search}
@@ -88,7 +89,6 @@ function ContactList({ userId }) {
                 .map(c => (
                     <div key={c.id} style={styles.card}>
 
-                        {/* 👤 HEADER */}
                         <div
                             style={styles.header}
                             onClick={() => toggleExpand(c)}
@@ -104,7 +104,6 @@ function ContactList({ userId }) {
                             <span>{expandedId === c.id ? "▲" : "▼"}</span>
                         </div>
 
-                        {/* 📄 DETAILS */}
                         {expandedId === c.id && (
                             <div style={styles.details}>
 
@@ -140,7 +139,6 @@ function ContactList({ userId }) {
                                             <p key={i}>📞 {p.phoneNumber}</p>
                                         ))}
 
-                                        {/* ⭐ ACTIONS */}
                                         <div style={styles.actions}>
                                             <button onClick={() => toggleFavorite(c.id)}>
                                                 {c.isFavorite ? "⭐" : "☆"}
@@ -155,7 +153,6 @@ function ContactList({ userId }) {
                                             </button>
                                         </div>
 
-                                        {/* 📝 NOTES */}
                                         <h4>Notes</h4>
 
                                         {notes.map((n, i) => (
@@ -190,11 +187,7 @@ const styles = {
         borderRadius: "8px",
         border: "1px solid #ccc"
     },
-
-    title: {
-        marginBottom: "10px"
-    },
-
+    title: { marginBottom: "10px" },
     card: {
         background: "#fff",
         borderRadius: "10px",
@@ -202,13 +195,11 @@ const styles = {
         marginBottom: "10px",
         boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
     },
-
     header: {
         display: "flex",
         alignItems: "center",
         cursor: "pointer"
     },
-
     avatar: {
         background: "#2563eb",
         color: "#fff",
@@ -216,25 +207,21 @@ const styles = {
         borderRadius: "50%",
         marginRight: "10px"
     },
-
     name: {
         flex: 1,
         fontWeight: "600"
     },
-
     details: {
         marginTop: "10px",
         padding: "10px",
         background: "#f9fafb",
         borderRadius: "8px"
     },
-
     actions: {
         display: "flex",
         gap: "10px",
         margin: "10px 0"
     },
-
     input: {
         display: "block",
         margin: "5px 0",
