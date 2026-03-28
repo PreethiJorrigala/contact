@@ -6,4 +6,4 @@ COPY . .
 
 RUN mvn clean package -DskipTests
 
-CMD ["java", "-jar", "target/contact*.jar"]
+CMD ["java", "-jar", "target/contacts-app-0.0.1-SNAPSHOT.jar"]
